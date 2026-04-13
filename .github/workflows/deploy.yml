@@ -1,0 +1,19 @@
+name: Podman Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 배포
+        run: |
+          podman rm -f myapp || true
+          podman rmi myapp || true
+          podman build --no-cache -t myapp .
+          podman run -d -p 80:80 --name myapp myapp
